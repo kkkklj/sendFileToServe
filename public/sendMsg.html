@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <!-- http://localhost:9999/sendMsg.html -->
+  <textarea name="" cols="30" rows="10" id="text">
+
+  </textarea>
+  <input type="button" value="提交" id="sub" />
+
+  <!-- <input type="file" id="file" value="" />
+  <input type="button" id="fileSub" value="test"> -->
+
+  <form action="uploads1a" id="myform">
+    <input type="file" name="image" id="file" />
+  </form>
+  <div id="test"></div>
+  <button id="btn">点击上传</button>
+  <button id="delAllImg">删除所有图片</button>
+  <div>
+    <img src="" id="see">
+  </div>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  <script>
+
+    const sub = document.getElementById('sub'),
+      txtBox = document.getElementById('text');
+    sub.onclick = () => {
+      console.log(txtBox.innerText);
+      // const xhr = 
+      console.log(axios)
+      axios.post('/sendString', {
+        msg: txtBox.value
+      }).then(data => console.log(data))
+        .catch(err => console.warn(err))
+    }
+
+    var btn = document.getElementById("btn");
+    var file = document.getElementById("file");
+    var promise = ["png", "jpg", "jpeg", "gif", "mp3", "mp4", "svg"];
+
+    file.onchange = function () {
+      var name = file.value;
+      var ext = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
+      var res = promise.indexOf(ext);
+      if (res < 0) {
+        alert("文件格式不正确");
+        document.getElementById("btn").disabled = true;
+      } else {
+        document.getElementById("btn").disabled = false;
+      }
+    }
+    btn.onclick = function () {
+      var val = document.getElementById("file").value;
+      if (val.length == 0) {
+        return;
+      }
+      var fromData = new FormData(document.forms[0]);
+      fromData.append("test", "formdata");
+      fromData.append("test1", JSON.stringify({ dd: 'dd' }));
+
+      axios.post('/sendImg', fromData).then(data => {
+        console.log(data);
+        // return
+        var data = data.data;
+        document.getElementById("see").setAttribute("src", data.imgSrc.replace(/public/, ''));
+        document.getElementById("file").value = "";
+      }).catch(err => console.warn(err))
+    }
+
+
+    document.getElementById("delAllImg").onclick = function () {
+      axios.delete('/allImg').then(data=> console.log(data))
+    }
+  </script>
+</body>
+
+</html>
