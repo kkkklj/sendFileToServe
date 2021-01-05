@@ -7,10 +7,12 @@ const utils = require('../utils/utils');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  // res.render('index', { title: 'Express' });
+  res.redirect('/sendMsg.html')
 });
 
 router.post('/sendString',(request, response) => {
+  console.log(request.headers)
   console.log('request',request.body.msg)
   fs.writeFileSync(_r+'/log/string.txt',request.body.msg);
   response.send({
@@ -20,6 +22,8 @@ router.post('/sendString',(request, response) => {
 })
 
 router.post('/sendImg',(req,res,next) => {
+  // console.log(req.body);
+  console.log('headers-->',req.headers)
   console.log(req.body,"body")
     //生成multiparty对象，并配置上传目标路径
     var form = new multiparty.Form({ uploadDir: './public/images' });

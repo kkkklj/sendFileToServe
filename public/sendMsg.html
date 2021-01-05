@@ -8,14 +8,11 @@
 </head>
 
 <body>
-  <!-- http://localhost:9999/sendMsg.html -->
   <textarea name="" cols="30" rows="10" id="text">
 
   </textarea>
   <input type="button" value="提交" id="sub" />
 
-  <!-- <input type="file" id="file" value="" />
-  <input type="button" id="fileSub" value="test"> -->
 
   <form action="uploads1a" id="myform">
     <input type="file" name="image" id="file" />
@@ -30,7 +27,7 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
   <script>
-
+//字符串提交
     const sub = document.getElementById('sub'),
       txtBox = document.getElementById('text');
     sub.onclick = () => {
@@ -42,44 +39,42 @@
       }).then(data => console.log(data))
         .catch(err => console.warn(err))
     }
+// 文件提交
+  const btn = document.getElementById("btn"),
+        file = document.getElementById("file"),
+        promise = ["png", "jpg", "jpeg", "gif", "mp3", "mp4", "svg"];
 
-    var btn = document.getElementById("btn");
-    var file = document.getElementById("file");
-    var promise = ["png", "jpg", "jpeg", "gif", "mp3", "mp4", "svg"];
-
-    file.onchange = function () {
-      var name = file.value;
-      var ext = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
-      var res = promise.indexOf(ext);
-      if (res < 0) {
-        alert("文件格式不正确");
-        document.getElementById("btn").disabled = true;
-      } else {
-        document.getElementById("btn").disabled = false;
-      }
+  file.onchange = function () {
+    let name = file.value,
+        ext = name.substring(name.lastIndexOf(".") + 1).toLowerCase(),
+        res = promise.indexOf(ext);
+    if (res < 0) {
+      alert("文件格式不正确");
+      btn.disabled = true;
+    } else {
+      btn.disabled = false;
     }
-    btn.onclick = function () {
-      var val = document.getElementById("file").value;
-      if (val.length == 0) {
-        return;
-      }
-      var fromData = new FormData(document.forms[0]);
-      fromData.append("test", "formdata");
-      fromData.append("test1", JSON.stringify({ dd: 'dd' }));
-
-      axios.post('/sendImg', fromData).then(data => {
-        console.log(data);
-        // return
-        var data = data.data;
-        document.getElementById("see").setAttribute("src", data.imgSrc.replace(/public/, ''));
-        document.getElementById("file").value = "";
-      }).catch(err => console.warn(err))
+  }
+  btn.onclick = function () {
+    const val = file.value;
+    if (val.length == 0) {
+      return;
     }
+    console.log(document.forms)
+    const fromData = new FormData(document.forms[0]);//获取表单
+    axios.post('/sendImg', fromData).then(data => {
+      console.log(data);
+      data = data.data;
+      document.getElementById("see").setAttribute("src", data.imgSrc.replace(/public/, ''));
+      file.value = "";
+    }).catch(err => console.warn(err))
+  }
 
 
-    document.getElementById("delAllImg").onclick = function () {
-      axios.delete('/allImg').then(data=> console.log(data))
-    }
+  document.getElementById("delAllImg").onclick = function () {
+    axios.delete('/allImg').then(data=> console.log(data));
+    document.getElementById("see").setAttribute("src", '');
+  }
   </script>
 </body>
 
